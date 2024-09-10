@@ -5,6 +5,7 @@
        <PokemonList 
                 :imageUrl="imageUrl" 
                 :apiUrl="apiUrl"
+                :pokemonId="pokemonId"
                 @setPokemonUrl="setPokemonUrl"/>
         <PokemonDetail 
                 v-if="showDetail"
@@ -24,6 +25,7 @@
           imageUrl: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/',
           apiUrl: 'https://pokeapi.co/api/v2/pokemon/',
           pokemonUrl: '',
+          pokemonId: '',
           showDetail: false
         }
       },
@@ -32,8 +34,9 @@
         PokemonDetail
       },
       methods: {
-        setPokemonUrl(url) {
+        setPokemonUrl(url,id) {
           this.pokemonUrl = url;
+          this.pokemonId = id;
           this.showDetail = true;
         },
         closeDetail() {

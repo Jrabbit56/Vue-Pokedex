@@ -36,44 +36,65 @@
                     </div>
                 </div>
                 <h2 v-else>The pokemon was not found</h2>
-                <button class="close" @click="closeDetail">Close</button>
+                <!-- Navigation Buttons -->
+                <div class="navigation">
+                    <button class="close" @click="prevPokemon" :disabled="pokemon.id === 1">Previous</button>
+                    <button class="close" @click="closeDetail">Close</button>
+                    <button class="close" @click="nextPokemon">Next</button>
+                </div>
         </div>
                 <i v-else class="fas fa-spinner fa-spin"></i>
     </div>
 </template>
 
 <script>
-export default {
-    props: ['pokemonUrl', 'imageUrl'],
-    data: () => ({
-        show: false,
-        pokemon: {}
-    }),
-    methods: {
-        fetchData() {
-            fetch(this.pokemonUrl)
+    export default {
+        props: ['pokemonUrl', 'imageUrl', 'pokemonId'],
+        data: () => ({
+            show: false,
+            pokemon: {},
+            currentPokemonId: this.pokemonId
+        }),
+        methods: {
+            fetchData(pokemonId) {
+            // Use currentPokemonId to fetch the data from the correct URL
+            const url = `https://pokeapi.co/api/v2/pokemon/${pokemonId}`;
+            fetch(url)
                 .then((resp) => {
-                    if (resp.ok) {
-                        return resp.json();
-                    }
-                    console.log(this.pokemonUrl);
+                if (resp.ok) {
+                    return resp.json();
+                } else {
+                    console.log(`Error fetching from: ${url}`);
+                    return Promise.reject(new Error(`API request failed with status ${resp.status}`));
+                }
                 })
                 .then((data) => {
                     this.pokemon = data;
-                    this.show = true;  // Data is fetched, show the detail
+                    this.show = true; // Data is fetched, show the detail
                 })
                 .catch((error) => {
                     console.error('Error:', error);
                 });
+            },
+            closeDetail() {
+                this.$emit('closeDetail');
+            },
+            nextPokemon() {
+                this.currentPokemonId += 1;
+                    this.fetchData(this.currentPokemonId);
+            },
+            prevPokemon() {
+                if (this.currentPokemonId > 1) {
+                    this.currentPokemonId -= 1;
+                    this.fetchData(this.currentPokemonId);
+                }
+            },
         },
-        closeDetail(){
-        this.$emit('closeDetail');
+        created() {
+            this.fetchData(this.currentPokemonId);
         }
-    },
-    created() {
-        this.fetchData();
-    }
-};
+    };
+
 </script>
 
 <style lang="scss" scoped>
@@ -187,5 +208,38 @@ export default {
       font-size: 2rem;
       color: #efefef;
     }
+
+    .navigation {
+        display: flex;
+        justify-content: space-between; /* Space between the buttons */
+        align-items: center;
+        margin-top: 20px;
+        }
+
+        button.close {
+        background-color: #f44336; /* Red background for the button */
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+        }
+
+        button.close:hover {
+        background-color: #d32f2f; /* Darker red on hover */
+        }
+
+        button.close:disabled {
+        background-color: #9e9e9e; /* Disabled state */
+        cursor: not-allowed;
+        }
+
+
   }
 </style>
