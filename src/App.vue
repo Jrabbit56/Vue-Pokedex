@@ -4,7 +4,7 @@
     </div>
 </template>
 
-<script>
+<script >
     import Pokemon from './components/Pokemon.vue'
 
     export default {

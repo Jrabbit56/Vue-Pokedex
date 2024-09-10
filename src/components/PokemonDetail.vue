@@ -52,7 +52,7 @@
    
 </template>
 
-<script>
+<script >
 export default {
   props: ["imageUrl", "pokemonId", "showDetail"],
   name: "pokemon-detail",

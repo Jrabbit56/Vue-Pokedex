@@ -14,7 +14,7 @@
   </div>
 </template>
 
-<script>
+<script >
   import PokemonList from './PokemonList.vue';
   import PokemonDetail from './PokemonDetail.vue';
 
